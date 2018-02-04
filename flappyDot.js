@@ -14,7 +14,7 @@ STATE = STATE_INIT;
 
 //metoda koja postavlja okolinu i likove
 function setup() {
-    createCanvas(window.innerWidth - 200, window.innerHeight - 100);
+    createCanvas(window.innerWidth-150, window.innerHeight - 200);
 
     for (var i = 0; i < GA.broj_ptica; i++) {
         birds.push(new Bird(i));
@@ -75,6 +75,9 @@ function draw() {
             deadBirds.splice(0, deadBirds.length);
         }
     }
+    textSize(15);
+    text("žive: " + birds.length, 20, height - 80);
+    text("najbolja spremnost: " + GA.najbolja_spremnost, 20, height - 60);
 }
 
 

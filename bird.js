@@ -37,17 +37,9 @@ Bird.prototype.clap = function(f) {
 
 //detekcija udara
 Bird.prototype.sudar = function(pipe) {
-    if(this.y <= pipe.goreY + 10 || this.y >= height-pipe.doleY - 10) {
-        if(this.x >= pipe.x && this.x <= pipe.x + 40){
+    if(this.y - 10 <= pipe.goreY || this.y + 10 >= pipe.doleY) {
+        if(this.x >= pipe.x){
             return true;
         }
     }
-};
-
-Bird.prototype.restart = function(iteracija) {
-    this.prethodna_spremnost = (iteracija == 1) ? 0 : this.trenutna_spremnost;
-    this.trenutna_spremnost = 0;
-
-    this.prethodni_bodovi = (iteracija == 1) ? 0 : this.trenutni_bodovi;
-    this.trenutni_bodovi = 0;
 };

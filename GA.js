@@ -40,12 +40,12 @@ GeneticAlgorithm.prototype.stvoriPopulaciju = function() {
 
 GeneticAlgorithm.prototype.aktivirajMozak = function(ptica, pipe) {
     // ulaz 1: horizontalna udaljenost između ptice i pipe-a
-    var horizontaloX = pipe.x - 50;
+    var horizontaloX = this.normalize(pipe.x - 50, width) * 200;
     // ulaz 2: razlika u visini između ptice i sredine između pipe-ova
-    var visinaY = ptica.y - pipe.goreY + 75;
+    var visinaY = ptica.y - this.normalize(pipe.goreY + 75, height / 2) * 200;
     //ulaz 3i4: visina pipe gornjeg i donjeg
-    var godnjiPipeVisinaY = pipe.goreY;
-    var donjiPipeVisinaY = pipe.doleY;
+    var godnjiPipeVisinaY = this.normalize(pipe.goreY, height / 2) * 200;
+    var donjiPipeVisinaY = this.normalize(pipe.doleY, height / 2) * 200;
 
     // niz svih ulaza
     var ulazi = [horizontaloX, visinaY, godnjiPipeVisinaY, donjiPipeVisinaY];
