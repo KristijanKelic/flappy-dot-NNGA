@@ -20,15 +20,6 @@ Bird.prototype.update = function() {
     //povećavamo brzinu padanja ptice, i za taj iznos povećavamo y da ispada ko da ptica pada
     this.brzina += 0.4;
     this.y += this.brzina;
-
-    //ograničimo da ne može izvan granica svijeta
-    if(this.y + 16 > height) {
-        this.ziva = false;
-    }
-
-    if(this.y -16 < 0) {
-        this.ziva = false;
-    }
 };
 
 //metoda koja crta kuglicu(pticu)
@@ -46,8 +37,8 @@ Bird.prototype.clap = function(f) {
 
 //detekcija udara
 Bird.prototype.sudar = function(pipe) {
-    if(this.y <= pipe.goreY || this.y >= height-pipe.doleY) {
-        if(this.x > pipe.x && this.x< pipe.x + 40){
+    if(this.y <= pipe.goreY + 10 || this.y >= height-pipe.doleY - 10) {
+        if(this.x >= pipe.x && this.x <= pipe.x + 40){
             return true;
         }
     }

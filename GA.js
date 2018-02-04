@@ -67,7 +67,7 @@ GeneticAlgorithm.prototype.evolucija = function() {
         this.stvoriPopulaciju();
     }
     else{
-        this.mutacijaRating = 0.2;
+        this.mutacijaRating = 0.5;
     }
 
     for(var i= this.najbolje_ptice; i<this.broj_ptica; i++){
