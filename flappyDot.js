@@ -4,12 +4,8 @@ var deadBirds = [];
 var pipes = [];
 var GA = new GeneticAlgorithm(10, 4);
 
-var STATE ;
-var STATE_INIT = 1;
-var STATE_START = 2;
-var STATE_PLAY = 3;
-var STATE_GAMEOVER = 4;
 var bodovi = 0;
+var pass = true;
 STATE = STATE_INIT;
 
 //metoda koja postavlja okolinu i likove
@@ -19,7 +15,7 @@ function setup() {
     for (var i = 0; i < GA.broj_ptica; i++) {
         birds.push(new Bird(i));
     }
-    pipes.push(new Pipe(color(random(254), random(254), random(254))));
+    pipes.push(new Pipe(width, random(height - 650, height-150), color(random(254), random(254), random(254))));
     cijevIspred = pipes[0];
     GA.reset();
     GA.stvoriPopulaciju();
@@ -28,8 +24,10 @@ function setup() {
 //metoda koja crta okolinu i likove
 function draw() {
     background(220,222,224);
+    
+
     if (frameCount % 100 === 0) {
-        pipes.push(new Pipe(color(random(254), random(254), random(254))));
+        pipes.push(new Pipe(width, random(height - 550, height - 350),color(random(254), random(254), random(254))));
     }
 
     for (var i = 0; i < pipes.length; i++) {
@@ -43,17 +41,19 @@ function draw() {
 
     for (var b = 0; b < birds.length; b++) {
         cijevIspred = pipes[0];
+        pass = true;
         birds[b].update();
         birds[b].draw();
         GA.aktivirajMozak(birds[b], cijevIspred);
         birds[b].trenutna_spremnost += 4;
         birds[b].trenutni_bodovi = bodovi;
       
-        if (birds[b].x > cijevIspred.x + 15) {        
+        if (birds[b].x > cijevIspred.x + 60 && pass == true) {
             cijevIspred = pipes[1];
+            pass = false;   
             bodovi += 1;
         }
-        if(birds[b].y < 0 || birds[b].y > height || birds[b].sudar(cijevIspred)){
+        if(birds[b].y - 10 < 0 || birds[b].y + 10 > height || birds[b].sudar(cijevIspred)){
             GA.populacija[birds[b].index].spremnost = birds[b].trenutna_spremnost;
             GA.populacija[birds[b].index].bodovi = birds[b].trenutni_bodovi;
             deadBirds.push(birds[b]);
@@ -63,7 +63,7 @@ function draw() {
             GA.evolucija();
             GA.iteracija += 1;
             bodovi = 0;
-            pipes.splice(0, pipes.length-1);
+            pipes.splice(0, pipes.length -1);
             deadBirds.sort(function(a, b){
                 return a.index-b.index;
             });
@@ -72,12 +72,16 @@ function draw() {
                 birds[j].prethodna_spremnost = deadBirds[j].trenutna_spremnost;
                 birds[j].prethodna_bodovi = deadBirds[j].trenutni_bodovi;
             }
-            deadBirds.splice(0, deadBirds.length);
-        }
+            deadBirds = [];
+        }      
     }
+    textSize(50);
+    text(bodovi, width - 50, height - 50);
     textSize(15);
     text("žive: " + birds.length, 20, height - 80);
     text("najbolja spremnost: " + GA.najbolja_spremnost, 20, height - 60);
+    text("najbolji bodovi: " + GA.najbolji_bodovi, 20, height - 40);
+    text("GENERACIJA: " + GA.iteracija, 20, height - 20);
 }
 
 

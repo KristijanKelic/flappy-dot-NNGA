@@ -26,7 +26,7 @@ Bird.prototype.update = function() {
 Bird.prototype.draw = function() {
     strokeWeight(3);
     fill(this.boja);
-    ellipse(this.x, this.y, 32, 32);
+    ellipse(this.x, this.y, 25, 25);
 };
 
 //metoda za pokret ptice
@@ -37,9 +37,7 @@ Bird.prototype.clap = function(f) {
 
 //detekcija udara
 Bird.prototype.sudar = function(pipe) {
-    if(this.y - 10 <= pipe.goreY || this.y + 10 >= pipe.doleY) {
-        if(this.x >= pipe.x){
-            return true;
-        }
+    if(this.y <= pipe.y - 65 || this.y >= pipe.y + 65){ 
+        if (this.x + 10 > pipe.x && this.x + 10 <= pipe.x + 60) return true;
     }
 };

@@ -11,7 +11,7 @@ var GeneticAlgorithm = function(broj_ptica, najbolje_ptice) {
 
 GeneticAlgorithm.prototype.reset = function() {
     this.iteracija = 1; // jednako je trenutnom broju iteracije
-    this.mutacijaRating = 1;
+    this.mutacijaRating = 0.8;
 
     this.najbolja_populacija = 0; // broj najboljih ptica iz populacije ptica
     this.najbolja_spremnost = 0; // najbolja spremnost ptice
@@ -24,8 +24,8 @@ GeneticAlgorithm.prototype.stvoriPopulaciju = function() {
 
     for (var i=0; i<this.broj_ptica; i++) {
         // stvori novu pticu generiranjem ranomd Synaptic neuronske mreže
-        // sa 2 neurona u ulaznom, 6 neurona u skrivenom te 1 neuronu u izlaznom layeru
-        var novaJedinica = new synaptic.Architect.Perceptron(4, 12, 1);
+        // sa 5 neurona u ulaznom, 15 neurona u skrivenom te 1 neuronu u izlaznom layeru
+        var novaJedinica = new synaptic.Architect.Perceptron(5, 15, 1);
 
         // dodatni parametri za novu jedinicu
         novaJedinica.index = i;
@@ -40,15 +40,17 @@ GeneticAlgorithm.prototype.stvoriPopulaciju = function() {
 
 GeneticAlgorithm.prototype.aktivirajMozak = function(ptica, pipe) {
     // ulaz 1: horizontalna udaljenost između ptice i pipe-a
-    var horizontaloX = this.normalize(pipe.x - 50, width) * 200;
+    var horizontaloX = pipe.x - 50;
     // ulaz 2: razlika u visini između ptice i sredine između pipe-ova
-    var visinaY = ptica.y - this.normalize(pipe.goreY + 75, height / 2) * 200;
+    var brinaPtice = ptica.brzina;
     //ulaz 3i4: visina pipe gornjeg i donjeg
-    var godnjiPipeVisinaY = this.normalize(pipe.goreY, height / 2) * 200;
-    var donjiPipeVisinaY = this.normalize(pipe.doleY, height / 2) * 200;
+    var gornjiPipeVisinaY = pipe.y - 65;
+    var donjiPipeVisinaY = height - pipe.y - 65;
+    //ulaz 5: visina ptice
+    var visinaPtice = ptica.y;
 
     // niz svih ulaza
-    var ulazi = [horizontaloX, visinaY, godnjiPipeVisinaY, donjiPipeVisinaY];
+    var ulazi = [horizontaloX, brinaPtice, visinaPtice, gornjiPipeVisinaY, donjiPipeVisinaY];
 
     // izračunaj izlaz aktivirajući synaptic neural network za pticu
     var izlaz = this.populacija[ptica.index].activate(ulazi);
@@ -67,7 +69,7 @@ GeneticAlgorithm.prototype.evolucija = function() {
         this.stvoriPopulaciju();
     }
     else{
-        this.mutacijaRating = 0.5;
+        this.mutacijaRating = 0.2;
     }
 
     for(var i= this.najbolje_ptice; i<this.broj_ptica; i++){
@@ -141,19 +143,19 @@ GeneticAlgorithm.prototype.crossOver = function(roditeljA, roditeljB) {
 
 GeneticAlgorithm.prototype.mutacija = function(potomak) {
     // mutiraj bias informacije potomkovih neurona
+
     for (var i=0; i<potomak.neurons.length; i++) {
-        potomak.neurons[i]['bias'] = this.mutiraj(potomak.neurons[i]['bias']);
+        potomak.neurons[i].bias = this.mutiraj(potomak.neurons[i].bias);
     }
 
     for (var i=0; i<potomak.connections.length; i++) {
-        potomak.connections[i]['weight'] = this.mutiraj(potomak.connections[i]['weight']);
+        potomak.connections[i].weight = this.mutiraj(potomak.connections[i].weight);
     }
-
     return potomak;
 };
 
 GeneticAlgorithm.prototype.mutiraj = function(gen) {
-    if(Math.random() < this.mutacijaRating) {
+    if(Math.random() <= this.mutacijaRating) {
         var mutacijaFaktor = 1 + ((Math.random() - 0.5) * 3 + (Math.random() - 0.5));
         gen *= mutacijaFaktor;
     }
