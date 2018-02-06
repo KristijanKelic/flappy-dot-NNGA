@@ -13,6 +13,7 @@ Pipe.prototype.update = function() {
 //metoda za crtanje cijevi
 Pipe.prototype.draw = function() {
     fill(this.color);
+    strokeWeight(0);
     //rect(x-cor, y-cor, sirina, visina)
     //cijevi gornje
     rect(this.x, 0, 60, this.y - 65);

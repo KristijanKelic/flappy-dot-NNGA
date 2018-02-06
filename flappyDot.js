@@ -2,11 +2,10 @@
 var birds = [];
 var deadBirds = [];
 var pipes = [];
-var GA = new GeneticAlgorithm(10, 4);
+var GA = new GeneticAlgorithm(20, 8);
 
 var bodovi = 0;
 var pass = true;
-STATE = STATE_INIT;
 
 //metoda koja postavlja okolinu i likove
 function setup() {
@@ -15,7 +14,7 @@ function setup() {
     for (var i = 0; i < GA.broj_ptica; i++) {
         birds.push(new Bird(i));
     }
-    pipes.push(new Pipe(width, random(height - 650, height-150), color(random(254), random(254), random(254))));
+    pipes.push(new Pipe(width, random(height - 650, height-150), color('green')));
     cijevIspred = pipes[0];
     GA.reset();
     GA.stvoriPopulaciju();
@@ -23,11 +22,11 @@ function setup() {
 
 //metoda koja crta okolinu i likove
 function draw() {
-    background(220,222,224);
+    background('nightsky');
     
 
     if (frameCount % 100 === 0) {
-        pipes.push(new Pipe(width, random(height - 550, height - 350),color(random(254), random(254), random(254))));
+        pipes.push(new Pipe(width, random(height - 550, height - 350), color('green')));
     }
 
     for (var i = 0; i < pipes.length; i++) {
@@ -35,6 +34,7 @@ function draw() {
         pipes[i].draw();
         if (pipes[i].x < -40) {
             pipes.shift();
+            bodovi += 1;
             cijevIspred = pipes[0];
         }
     }
@@ -50,8 +50,7 @@ function draw() {
       
         if (birds[b].x > cijevIspred.x + 60 && pass == true) {
             cijevIspred = pipes[1];
-            pass = false;   
-            bodovi += 1;
+            pass = false;         
         }
         if(birds[b].y - 10 < 0 || birds[b].y + 10 > height || birds[b].sudar(cijevIspred)){
             GA.populacija[birds[b].index].spremnost = birds[b].trenutna_spremnost;
@@ -76,10 +75,10 @@ function draw() {
         }      
     }
     textSize(50);
-    text(bodovi, width - 50, height - 50);
+    text(bodovi, width/2, height - 50);
     textSize(15);
     text("žive: " + birds.length, 20, height - 80);
-    text("najbolja spremnost: " + GA.najbolja_spremnost, 20, height - 60);
+    text("najdulji put: " + GA.najbolja_spremnost, 20, height - 60);
     text("najbolji bodovi: " + GA.najbolji_bodovi, 20, height - 40);
     text("GENERACIJA: " + GA.iteracija, 20, height - 20);
 }

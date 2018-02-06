@@ -24,7 +24,7 @@ Bird.prototype.update = function() {
 
 //metoda koja crta kuglicu(pticu)
 Bird.prototype.draw = function() {
-    strokeWeight(3);
+    strokeWeight(1);
     fill(this.boja);
     ellipse(this.x, this.y, 25, 25);
 };

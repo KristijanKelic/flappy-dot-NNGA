@@ -5,7 +5,10 @@ html, body {
 body {
   padding-left: 5%;
   padding-right: 5%;
-  background-color: black;
+  background-image: url('http://www.steppenwoelfe.eu/images/bg.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 h1 {

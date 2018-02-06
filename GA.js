@@ -11,7 +11,7 @@ var GeneticAlgorithm = function(broj_ptica, najbolje_ptice) {
 
 GeneticAlgorithm.prototype.reset = function() {
     this.iteracija = 1; // jednako je trenutnom broju iteracije
-    this.mutacijaRating = 0.8;
+    this.mutacijaRating = 1;
 
     this.najbolja_populacija = 0; // broj najboljih ptica iz populacije ptica
     this.najbolja_spremnost = 0; // najbolja spremnost ptice
@@ -69,7 +69,7 @@ GeneticAlgorithm.prototype.evolucija = function() {
         this.stvoriPopulaciju();
     }
     else{
-        this.mutacijaRating = 0.2;
+        this.mutacijaRating = 0.4;
     }
 
     for(var i= this.najbolje_ptice; i<this.broj_ptica; i++){
