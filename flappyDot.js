@@ -8,7 +8,6 @@ var bodovi = 0;
 var udaljenost = 0;
 var put = 0;
 var najboljiPut = 0;
-var pass = true;
 
 //metoda koja postavlja okolinu i likove
 function setup() {
@@ -46,22 +45,20 @@ function draw() {
         cijevIspred = pipes[0];
         put += 3.5;
         udaljenost += Math.abs(cijevIspred.x);
-        pass = true;
         birds[b].update();
         birds[b].draw();
         GA.aktivirajMozak(birds[b], cijevIspred);
         birds[b].trenutna_spremnost += udaljenost - (cijevIspred.x - birds[b].x);
         birds[b].trenutni_bodovi = bodovi;
       
-        if (birds[b].x > cijevIspred.x + 60 && pass == true) {
-            cijevIspred = pipes[1];
-            pass = false;         
+        if (birds[b].x > cijevIspred.x + 60) {
+            cijevIspred = pipes[1];         
         }
         if(birds[b].y - 10 < 0 || birds[b].y + 10 > height || birds[b].sudar(cijevIspred)){
             GA.populacija[birds[b].index].spremnost = birds[b].trenutna_spremnost;
             GA.populacija[birds[b].index].bodovi = birds[b].trenutni_bodovi;
             deadBirds.push(birds[b]);
-            birds.splice(b, 1);        
+            birds.splice(b, 1);     
         }
         if(birds.length == 0){
             GA.evolucija();
