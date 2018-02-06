@@ -14,7 +14,7 @@ function setup() {
     for (var i = 0; i < GA.broj_ptica; i++) {
         birds.push(new Bird(i));
     }
-    pipes.push(new Pipe(width, random(height - 650, height-150), color('green')));
+    pipes.push(new Pipe(width, random(height * 0.3, height * 0.7), color('green')));
     cijevIspred = pipes[0];
     GA.reset();
     GA.stvoriPopulaciju();
@@ -26,7 +26,7 @@ function draw() {
     
 
     if (frameCount % 100 === 0) {
-        pipes.push(new Pipe(width, random(height - 550, height - 350), color('green')));
+        pipes.push(new Pipe(width, random(height * 0.3, height * 0.7), color('green')));
     }
 
     for (var i = 0; i < pipes.length; i++) {
