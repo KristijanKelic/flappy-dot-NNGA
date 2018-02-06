@@ -1,6 +1,6 @@
 // Implementacija genetskog algoritma
 
-var GeneticAlgorithm = function(broj_ptica, najbolje_ptice) {
+function GeneticAlgorithm(broj_ptica, najbolje_ptice) {
     this.broj_ptica = broj_ptica; // broj ptica u populaciji
     this.najbolje_ptice = najbolje_ptice; // najbolje ptice u populaciji (koriste se za unaprijeđenje iduće populacije)
 
@@ -69,7 +69,7 @@ GeneticAlgorithm.prototype.evolucija = function() {
         this.stvoriPopulaciju();
     }
     else{
-        this.mutacijaRating = 0.4;
+        this.mutacijaRating = 0.2;
     }
 
     for(var i= this.najbolje_ptice; i<this.broj_ptica; i++){
