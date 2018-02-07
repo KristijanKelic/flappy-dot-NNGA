@@ -37,7 +37,7 @@ Bird.prototype.clap = function(f) {
 
 //detekcija udara
 Bird.prototype.sudar = function(pipe) {
-    if(this.y <= pipe.y - 65 || this.y >= pipe.y + 65){ 
-        if (this.x + 10 > pipe.x && this.x + 10 <= pipe.x + 60) return true;
+    if(this.y - 15 <= pipe.y - 65 || this.y + 15 >= pipe.y + 65){ 
+        if (this.x + 15 > pipe.x && this.x + 15 <= pipe.x + 60) return true;
     }
 };

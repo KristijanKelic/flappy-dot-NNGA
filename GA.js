@@ -24,8 +24,8 @@ GeneticAlgorithm.prototype.stvoriPopulaciju = function() {
 
     for (var i=0; i<this.broj_ptica; i++) {
         // stvori novu pticu generiranjem ranomd Synaptic neuronske mreže
-        // sa 5 neurona u ulaznom, 15 neurona u skrivenom te 1 neuronu u izlaznom layeru
-        var novaJedinica = new synaptic.Architect.Perceptron(5, 15, 1);
+        // sa 2 neurona u ulaznom, 6 neurona u skrivenom te 1 neuronu u izlaznom layeru
+        var novaJedinica = new synaptic.Architect.Perceptron(2, 6, 1);
 
         // dodatni parametri za novu jedinicu
         novaJedinica.index = i;
@@ -42,15 +42,10 @@ GeneticAlgorithm.prototype.aktivirajMozak = function(ptica, pipe) {
     // ulaz 1: horizontalna udaljenost između ptice i pipe-a
     var horizontaloX = pipe.x - 50;
     // ulaz 2: razlika u visini između ptice i sredine između pipe-ova
-    var brinaPtice = ptica.brzina;
-    //ulaz 3i4: visina pipe gornjeg i donjeg
-    var gornjiPipeVisinaY = pipe.y - 65;
-    var donjiPipeVisinaY = height - pipe.y - 65;
-    //ulaz 5: visina ptice
-    var visinaPtice = ptica.y;
+    var razlikaVisina = pipe.y - ptica.y;
 
     // niz svih ulaza
-    var ulazi = [horizontaloX, brinaPtice, visinaPtice, gornjiPipeVisinaY, donjiPipeVisinaY];
+    var ulazi = [horizontaloX, razlikaVisina];
 
     // izračunaj izlaz aktivirajući synaptic neural network za pticu
     var izlaz = this.populacija[ptica.index].activate(ulazi);
@@ -65,11 +60,11 @@ GeneticAlgorithm.prototype.evolucija = function() {
     // bit će kopirane u iduću populaciju
     var pobjednici = this.selekcija();
 
-    if(this.mutacijaRating == 1 && pobjednici[0].spremnost < 0) {
+    if(this.mutacijaRating == 1 && pobjednici[0].bodovi == 0) {
         this.stvoriPopulaciju();
     }
     else{
-        this.mutacijaRating = 0.2;
+        this.mutacijaRating = 0.4;
     }
 
     for(var i= this.najbolje_ptice; i<this.broj_ptica; i++){
@@ -165,12 +160,5 @@ GeneticAlgorithm.prototype.mutiraj = function(gen) {
 
 GeneticAlgorithm.prototype.getRandomUnit = function(array) {
     return array[round(random(0, array.length-1))];
-};
-
-GeneticAlgorithm.prototype.normalize = function(value, max) {
-    if(value < -max) value = -max;
-    else if(value > max) value = max;
-
-    return(value/max);
 };
 
