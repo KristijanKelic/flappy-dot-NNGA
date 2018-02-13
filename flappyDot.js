@@ -47,7 +47,7 @@ function draw() {
         udaljenost += Math.abs(cijevIspred.x);
         birds[b].update();
         birds[b].draw();
-        GA.aktivirajMozak(birds[b], cijevIspred);
+        GA.reagiraj(birds[b], cijevIspred);
         birds[b].trenutna_spremnost += udaljenost - (cijevIspred.x - birds[b].x);
         birds[b].trenutni_bodovi = bodovi;
       

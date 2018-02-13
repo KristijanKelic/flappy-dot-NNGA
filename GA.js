@@ -38,7 +38,7 @@ GeneticAlgorithm.prototype.stvoriPopulaciju = function() {
     }
 };
 
-GeneticAlgorithm.prototype.aktivirajMozak = function(ptica, pipe) {
+GeneticAlgorithm.prototype.reagiraj = function(ptica, pipe) {
     // ulaz 1: horizontalna udaljenost između ptice i pipe-a
     var horizontaloX = pipe.x - 50;
     // ulaz 2: razlika u visini između ptice i sredine između pipe-ova
@@ -53,6 +53,64 @@ GeneticAlgorithm.prototype.aktivirajMozak = function(ptica, pipe) {
     // napravi clap ako je izlaz veći od 0.5
     if(izlaz[0] > 0.5) ptica.clap(-8);
 };
+
+// metoda za selekciju
+GeneticAlgorithm.prototype.selekcija = function () {
+    // sortirati jedinice trenutne populacije u silazećem poretku po spremnosti
+    var sortiranaPopulacija = this.populacija.sort(
+        function (unitA, unitB) {
+            return unitB.spremnost - unitA.spremnost;
+        }
+    );
+
+    for (var i = 0; i < this.najbolje_ptice; i++) this.populacija[i].jePobjednik = true;
+
+    return sortiranaPopulacija.slice(0, this.najbolje_ptice);
+};
+
+
+GeneticAlgorithm.prototype.crossOver = function (roditeljA, roditeljB) {
+    var cutPoint = round(random(0, roditeljA.neurons.length - 1));
+    // zamijeni informaciju između dva roditelja
+    // 1. lijeva strana je kopirana od jednog roditelja
+    // 2. desna strana poslje crossovera je kopirana od drugog roditelja
+    for (var i = cutPoint; i < roditeljA.neurons.length; i++) {
+        var biasRoditeljaA = roditeljA.neurons[i]['bias'];
+        roditeljA.neurons[i]['bias'] = roditeljB.neurons[i]['bias'];
+        roditeljB.neurons[i]['bias'] = biasRoditeljaA;
+    }
+
+    return random(0, 1) == 1 ? roditeljA : roditeljB;
+};
+
+GeneticAlgorithm.prototype.mutacija = function (potomak) {
+    // mutiraj bias informacije potomkovih neurona
+
+    for (var i = 0; i < potomak.neurons.length; i++) {
+        potomak.neurons[i].bias = this.mutiraj(potomak.neurons[i].bias);
+    }
+
+    for (var i = 0; i < potomak.connections.length; i++) {
+        potomak.connections[i].weight = this.mutiraj(potomak.connections[i].weight);
+    }
+    return potomak;
+};
+
+GeneticAlgorithm.prototype.mutiraj = function (gen) {
+    if (Math.random() <= this.mutacijaRating) {
+        var mutacijaFaktor = 1 + ((Math.random() - 0.5) * 3 + (Math.random() - 0.5));
+        gen *= mutacijaFaktor;
+    }
+
+    return gen;
+};
+
+GeneticAlgorithm.prototype.dohvatiNasumicno = function (array) {
+    return array[round(random(0, array.length - 1))];
+};
+
+
+
 
 // evolucija nad populacijom vrši se po selekciji, križanju i mutaciju jedinica
 GeneticAlgorithm.prototype.evolucija = function() {
@@ -76,12 +134,12 @@ GeneticAlgorithm.prototype.evolucija = function() {
             potomak = this.crossOver(roditeljA, roditeljB);
         }
         else if(i < this.broj_ptica-2){
-            roditeljA = this.getRandomUnit(pobjednici).toJSON();
-            roditeljB = this.getRandomUnit(pobjednici).toJSON();
+            roditeljA = this.dohvatiNasumicno(pobjednici).toJSON();
+            roditeljB = this.dohvatiNasumicno(pobjednici).toJSON();
             potomak = this.crossOver(roditeljA, roditeljB);
         }
         else{
-            potomak = this.getRandomUnit(pobjednici).toJSON();
+            potomak = this.dohvatiNasumicno(pobjednici).toJSON();
         }
 
         potomak = this.mutacija(potomak);
@@ -104,61 +162,5 @@ GeneticAlgorithm.prototype.evolucija = function() {
     this.populacija.sort(function(jedinicaA, jedinicaB){
         return jedinicaA.index - jedinicaB.index;
     });
-};
-
-
-
-// metoda za selekciju
-GeneticAlgorithm.prototype.selekcija = function() {
-    // sortirati jedinice trenutne populacije u silazećem poretku po spremnosti
-    var sortiranaPopulacija = this.populacija.sort(
-        function(unitA, unitB) {
-            return unitB.spremnost - unitA.spremnost;
-        }
-    );
-
-    for (var i=0; i<this.najbolje_ptice; i++) this.populacija[i].jePobjednik = true;
-
-    return sortiranaPopulacija.slice(0, this.najbolje_ptice);
-};
-
-GeneticAlgorithm.prototype.crossOver = function(roditeljA, roditeljB) {
-    var cutPoint = round(random(0, roditeljA.neurons.length-1));
-    // zamijeni informaciju između dva roditelja
-    // 1. lijeva strana je kopirana od jednog roditelja
-    // 2. desna strana poslje crossovera je kopirana od drugog roditelja
-    for (var i=cutPoint; i<roditeljA.neurons.length; i++) {
-        var biasRoditeljaA = roditeljA.neurons[i]['bias'];
-        roditeljA.neurons[i]['bias'] = roditeljB.neurons[i]['bias'];
-        roditeljB.neurons[i]['bias'] = biasRoditeljaA;
-    }
-
-    return random(0, 1) == 1 ? roditeljA: roditeljB;
-};
-
-GeneticAlgorithm.prototype.mutacija = function(potomak) {
-    // mutiraj bias informacije potomkovih neurona
-
-    for (var i=0; i<potomak.neurons.length; i++) {
-        potomak.neurons[i].bias = this.mutiraj(potomak.neurons[i].bias);
-    }
-
-    for (var i=0; i<potomak.connections.length; i++) {
-        potomak.connections[i].weight = this.mutiraj(potomak.connections[i].weight);
-    }
-    return potomak;
-};
-
-GeneticAlgorithm.prototype.mutiraj = function(gen) {
-    if(Math.random() <= this.mutacijaRating) {
-        var mutacijaFaktor = 1 + ((Math.random() - 0.5) * 3 + (Math.random() - 0.5));
-        gen *= mutacijaFaktor;
-    }
-
-    return gen;
-};
-
-GeneticAlgorithm.prototype.getRandomUnit = function(array) {
-    return array[round(random(0, array.length-1))];
 };
 
