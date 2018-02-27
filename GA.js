@@ -4,19 +4,17 @@ function GeneticAlgorithm(broj_ptica, najbolje_ptice) {
     this.broj_ptica = broj_ptica; // broj ptica u populaciji
     this.najbolje_ptice = najbolje_ptice; // najbolje ptice u populaciji (koriste se za unaprijeđenje iduće populacije)
 
-    if(this.broj_ptica < this.najbolje_ptice) this.broj_ptica = this.najbolje_ptice;
-
-    this.populacija = []; // niz svih ptica u populaciji
-};
-
-GeneticAlgorithm.prototype.reset = function() {
     this.iteracija = 1; // jednako je trenutnom broju iteracije
     this.mutacijaRating = 1;
 
-    this.najbolja_populacija = 0; // broj najboljih ptica iz populacije ptica
     this.najbolja_spremnost = 0; // najbolja spremnost ptice
     this.najbolji_bodovi = 0; // score najbolje ptice
-};
+
+    if(this.broj_ptica < this.najbolje_ptice) this.broj_ptica = this.najbolje_ptice;
+
+    this.populacija = []; // niz svih ptica u populaciji
+}
+
 
 GeneticAlgorithm.prototype.stvoriPopulaciju = function() {
     // očisti neku postojeću populaciju
@@ -75,9 +73,9 @@ GeneticAlgorithm.prototype.crossOver = function (roditeljA, roditeljB) {
     // 1. lijeva strana je kopirana od jednog roditelja
     // 2. desna strana poslje crossovera je kopirana od drugog roditelja
     for (var i = cutPoint; i < roditeljA.neurons.length; i++) {
-        var biasRoditeljaA = roditeljA.neurons[i]['bias'];
-        roditeljA.neurons[i]['bias'] = roditeljB.neurons[i]['bias'];
-        roditeljB.neurons[i]['bias'] = biasRoditeljaA;
+        var biasRoditeljaA = roditeljA.neurons[i].bias;
+        roditeljA.neurons[i].bias = roditeljB.neurons[i].bias;
+        roditeljB.neurons[i].bias = biasRoditeljaA;
     }
 
     return random(0, 1) == 1 ? roditeljA : roditeljB;
@@ -90,8 +88,8 @@ GeneticAlgorithm.prototype.mutacija = function (potomak) {
         potomak.neurons[i].bias = this.mutiraj(potomak.neurons[i].bias);
     }
 
-    for (var i = 0; i < potomak.connections.length; i++) {
-        potomak.connections[i].weight = this.mutiraj(potomak.connections[i].weight);
+    for (var j = 0; j < potomak.connections.length; j++) {
+        potomak.connections[j].weight = this.mutiraj(potomak.connections[j].weight);
     }
     return potomak;
 };
@@ -140,9 +138,8 @@ GeneticAlgorithm.prototype.evolucija = function() {
         }
         else{
             potomak = this.dohvatiNasumicno(pobjednici).toJSON();
+            potomak = this.mutacija(potomak);
         }
-
-        potomak = this.mutacija(potomak);
 
         var novaJedinica = synaptic.Network.fromJSON(potomak);
         novaJedinica.index = this.populacija[i].index;

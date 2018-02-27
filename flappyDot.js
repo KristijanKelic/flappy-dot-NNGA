@@ -2,7 +2,7 @@
 var birds = [];
 var deadBirds = [];
 var pipes = [];
-var GA = new GeneticAlgorithm(20, 8);
+var GA = new GeneticAlgorithm(40, 20);
 
 var bodovi = 0;
 var udaljenost = 0;
@@ -18,15 +18,13 @@ function setup() {
     }
     pipes.push(new Pipe(width, random(height * 0.3, height * 0.7), color('green')));
     cijevIspred = pipes[0];
-    GA.reset();
     GA.stvoriPopulaciju();
 }
 
 //metoda koja crta okolinu i likove
 function draw() {
-    background('nightsky');
+    background(255);
     
-
     if (frameCount % 100 === 0) {
         pipes.push(new Pipe(width, random(height * 0.3, height * 0.7), color('green')));
     }
