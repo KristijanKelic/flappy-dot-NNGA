@@ -7,7 +7,7 @@ function Pipe(x, y, color) {
 
 
 Pipe.prototype.update = function() {
-    this.x -= 3.5;
+    this.x -= 4;
 };
 
 //metoda za crtanje cijevi
